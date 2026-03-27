@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>סער בל</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Rubik', sans-serif;
+  background: rgb(0, 0, 0);
+  color: #fff;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (max-width: 809px) {
+  body { background: rgb(8, 7, 7); }
+}
+
+.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 48px 32px 40px;
+}
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(32px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.anim-fade { opacity: 0; animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.anim-up { opacity: 0; animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.d1 { animation-delay: 0s; }
+.d2 { animation-delay: 0.08s; }
+.d3 { animation-delay: 0.15s; }
+.d4 { animation-delay: 0.3s; }
+.d5 { animation-delay: 0.4s; }
+.d6 { animation-delay: 0.5s; }
+.d7 { animation-delay: 0.6s; }
+.d8 { animation-delay: 0.7s; }
+.d9 { animation-delay: 0.9s; }
+
+/* ── Hero ── */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+/* Photo — rounded square like Vince */
+.photo-wrap {
+  width: 68px;
+  height: 68px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: #181818;
+  flex-shrink: 0;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.15);
+}
+
+/* Name — Space Grotesk, smaller, premium */
+.name {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
+  background-image: linear-gradient(0deg, rgb(255, 255, 255) 0%, rgb(161, 161, 161) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Title line under name */
+.title-line {
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
+  max-width: 400px;
+}
+
+/* ── Social pills ── */
+.socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  margin-bottom: 36px;
+}
+
+.social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  padding: 7px 13px;
+  color: #fff;
+  text-decoration: none;
+  font-family: 'Inter', 'Rubik', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.1px;
+  line-height: 1.4;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.social-pill:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.social-pill svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* ── Cards ── */
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 14px 16px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Card icon — each has its own color */
+.card__icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card__icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.card__icon--courses { background: #111a14; }
+.card__icon--agency { background: #1a1510; }
+.card__icon--consult { background: #0f1a18; }
+
+/* Card text */
+.card__body { flex: 1; min-width: 0; }
+
+.card__title {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgb(242, 242, 242);
+  line-height: 1.4;
+}
+
+.card__desc {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgb(124, 127, 130);
+  line-height: 1.4;
+}
+
+/* Card arrow */
+.card__arrow {
+  flex-shrink: 0;
+  opacity: 0.4;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.card:hover .card__arrow { opacity: 0.7; transform: translate(-2px, -2px); }
+
+/* ── Video card ── */
+.card--video {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Video card — image fills entire card, no frame */
+.card--video {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: none;
+  background: none;
+}
+
+.card--video:hover {
+  background: none;
+  border-color: transparent;
+}
+
+.card--video .card__thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2.2 / 1;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.card--video .card__thumb-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+  filter: brightness(0.5);
+  transition: opacity 0.3s;
+}
+
+.card--video:hover .card__thumb-bg {
+  opacity: 0.4;
+}
+
+.card--video .card__thumb-overlay {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 18px 20px;
+  text-align: center;
+  gap: 8px;
+}
+
+.card__play-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 2px;
+}
+
+.card--video:hover .card__play-btn {
+  border-color: rgba(255,255,255,0.4);
+  background: rgba(0,0,0,0.6);
+}
+
+.card__thumb-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.95);
+  line-height: 1.4;
+  max-width: 380px;
+}
+
+.card__thumb-meta {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.2px;
+}
+
+/* ── Form ── */
+.form-section {
+  margin-top: 44px;
+  text-align: center;
+}
+
+.form-section__title {
+  font-size: 16px;
+  font-weight: 500;
+  color: rgb(242, 242, 242);
+  line-height: 1.4;
+}
+
+.form-section__subtitle {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 300;
+  color: rgb(124, 127, 130);
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.form-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.form-row input {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1px solid rgb(41, 41, 41);
+  border-radius: 8px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: #fff;
+  background: transparent;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-row input::placeholder { color: #555; }
+.form-row input:focus { border-color: rgba(255, 255, 255, 0.2); }
+
+.form-submit {
+  width: 100%;
+  padding: 12px;
+  background: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  border: 1px solid rgb(41, 41, 41);
+  border-radius: 8px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.form-submit:hover { opacity: 0.85; }
+.form-submit:disabled { cursor: default; }
+
+/* ── Footer ── */
+.footer {
+  margin-top: 40px;
+  font-size: 12px;
+  color: rgb(124, 127, 130);
+  text-align: center;
+  opacity: 0.5;
+}
+
+/* ── Mobile ── */
+@media (max-width: 500px) {
+  .page { padding: 40px 18px 36px; }
+  .name { font-size: 22px; }
+  .title-line { font-size: 13px; max-width: 280px; }
+  .photo { width: 60px; height: 60px; }
+  .socials { gap: 6px; }
+  .social-pill { font-size: 12px; padding: 6px 10px; gap: 4px; }
+  .social-pill svg { width: 14px; height: 14px; }
+  .card { padding: 12px 14px; gap: 12px; }
+  .card__icon { width: 38px; height: 38px; border-radius: 10px; }
+  .card__icon svg { width: 17px; height: 17px; }
+  .card__title { font-size: 14px; }
+  .card__desc { font-size: 12px; }
+  .card__thumb-title { font-size: 13px; max-width: 260px; padding: 0 4px; }
+  .form-row { flex-direction: column; gap: 8px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="photo-wrap anim-fade d1">
+      <img class="photo"
+        src="https://scontent.cdninstagram.com/v/t51.2885-19/459791596_3895642207332929_8484878747875614348_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=104&ccb=7-5&_nc_sid=bf7eb4&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=q0COOenj7pkQ7kNvwFP6Kep&_nc_oc=Ado-9sRnHvjBhVKMsNYN8SQyz6exy8aniIuS-U8m0kmTpUk8i3BqK_FXfs7ezb7_OAXxgJCoj4GyJe7o81WW2cVB&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_ss=7a30f&oh=00_Afwf9bXwFW0PVEqbEV0qIPGV9W5Fi5xysf6eg188gJBnQg&oe=69CC350F"
+        alt="סער בל"
+        onerror="this.parentElement.style.background='#222'"
+      >
+    </div>
+    <h1 class="name anim-fade d2">Saar Bell</h1>
+    <p class="title-line anim-fade d3">ניהלתי, הגדלתי ומכרתי מותגי איקומרס בארץ ובעולם. היום מוביל את סוכנות הפרפורמנס בלהפוינט שמנהלת מעל 7 ספרות בחודש.</p>
+  </div>
+
+  <!-- Social pills — compact, single line -->
+  <div class="socials anim-fade d4">
+    <a class="social-pill" href="https://www.instagram.com/saarbell/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M7.054.143C5.783.203 4.916.407 4.157.704 3.372 1.01 2.707 1.42 2.045 2.085 1.382 2.75.975 3.416.67 4.2.372 4.958.17 5.826.11 7.098.05 8.372.036 8.79.036 12.002c0 3.212.015 3.629.075 4.904.06 1.27.264 2.14.56 2.9.307.786.717 1.45 1.382 2.114.663.664 1.33 1.077 2.113 1.383.762.297 1.63.5 2.902.561 1.275.058 1.692.072 4.904.072 3.213 0 3.63-.014 4.905-.072 1.27-.06 2.14-.264 2.9-.56.785-.307 1.45-.72 2.114-1.384.664-.664 1.074-1.33 1.383-2.113.295-.762.5-1.63.56-2.901.058-1.275.073-1.692.073-4.904 0-3.213-.015-3.63-.073-4.905-.06-1.271-.265-2.14-.56-2.9-.31-.786-.72-1.452-1.384-2.114C20.472 1.42 19.806 1.01 19.023.704 18.26.407 17.392.203 16.12.143 14.846.085 14.43.07 11.216.07c-3.212 0-3.63.015-4.162.073zm.09 21.576c-1.163-.053-1.795-.247-2.215-.41a3.7 3.7 0 01-1.374-.895 3.7 3.7 0 01-.896-1.374c-.163-.42-.358-1.052-.41-2.216-.058-1.258-.07-1.636-.07-4.824s.012-3.565.07-4.823c.052-1.164.248-1.795.41-2.216.217-.558.476-.956.896-1.374a3.7 3.7 0 011.374-.896c.42-.163 1.052-.358 2.216-.41 1.257-.058 1.635-.07 4.823-.07 3.19 0 3.566.012 4.824.07 1.163.052 1.795.248 2.215.41.558.217.957.476 1.375.896.42.418.678.816.895 1.374.164.42.358 1.052.41 2.216.058 1.258.07 1.636.07 4.823 0 3.188-.012 3.566-.07 4.824-.052 1.164-.246 1.795-.41 2.216a3.7 3.7 0 01-.895 1.374 3.7 3.7 0 01-1.375.895c-.42.164-1.052.358-2.215.41-1.257.058-1.635.07-4.824.07-3.188 0-3.566-.012-4.823-.07zm9.72-15.933a1.44 1.44 0 102.88 0 1.44 1.44 0 00-2.88 0zM5.838 12.002a6.178 6.178 0 1012.356 0 6.178 6.178 0 00-12.356 0zm2.156 0a4.022 4.022 0 118.044 0 4.022 4.022 0 01-8.044 0z" fill="currentColor"/></svg>
+      @saarbell
+    </a>
+    <a class="social-pill" href="https://www.youtube.com/@bellapointmedia" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M23.47 6.132a3.012 3.012 0 00-2.12-2.132C19.505 3.5 11.988 3.5 11.988 3.5s-7.517 0-9.362.5A3.012 3.012 0 00.505 6.132C0 7.988 0 11.875 0 11.875s0 3.887.505 5.743a3.012 3.012 0 002.12 2.132c1.846.5 9.363.5 9.363.5s7.517 0 9.362-.5a3.012 3.012 0 002.12-2.132c.506-1.856.506-5.743.506-5.743s0-3.887-.505-5.743zM9.545 15.568V8.182l6.263 3.693-6.263 3.693z" fill="currentColor"/></svg>
+      YouTube
+    </a>
+    <a class="social-pill" href="https://wa.me/972512524182" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4l-2-1c-.3-.1-.5-.2-.7.1l-1 1.2c-.2.2-.3.3-.6.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.4.3-.4v-.5l-1-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.8s1.2 3.3 1.4 3.5c.2.2 2.4 3.6 5.8 5.1.8.3 1.5.5 2 .7.8.3 1.6.2 2.2.1.7-.1 2-.8 2.3-1.6.3-.8.3-1.5.2-1.6-.1-.2-.3-.3-.6-.4zM12 21.8A9.8 9.8 0 012.2 12 9.8 9.8 0 0112 2.2 9.8 9.8 0 0121.8 12 9.8 9.8 0 0112 21.8zM12 0C5.4 0 0 5.4 0 12c0 2.1.5 4.1 1.5 5.9L0 24l6.3-1.6c1.7.9 3.7 1.4 5.7 1.4 6.6 0 12-5.4 12-12S18.6 0 12 0z"/></svg>
+      WhatsApp
+    </a>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards">
+
+    <!-- Card 1: Courses -->
+    <a class="card anim-up d5" href="https://products.bellapoint.net/" target="_blank" rel="noopener">
+      <div class="card__icon card__icon--courses">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M8 5.5V18.5L19 12L8 5.5Z" fill="#4ade80"/></svg>
+      </div>
+      <div class="card__body">
+        <div class="card__title">צפו בכל הקורסים שלנו</div>
+        <div class="card__desc">כל הקורסים שלנו עם לינק לכאן</div>
+      </div>
+      <div class="card__arrow">
+        <svg width="14" height="14" fill="none"><path d="m2 12 10-10M12 2v10" stroke="#666" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+    </a>
+
+    <!-- Card 2: Agency -->
+    <a class="card anim-up d6" href="https://www.bellapoint.net/" target="_blank" rel="noopener">
+      <div class="card__icon card__icon--agency">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7" stroke="#E8A04B" stroke-width="2.5" stroke-linecap="round"/><path d="M10 7H17V14" stroke="#E8A04B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="card__body">
+        <div class="card__title">למעבר לאתר הסוכנות בלהפוינט</div>
+        <div class="card__desc">לעבודה איתנו ועוד פרטים על הסוכנות</div>
+      </div>
+      <div class="card__arrow">
+        <svg width="14" height="14" fill="none"><path d="m2 12 10-10M12 2v10" stroke="#666" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+    </a>
+
+    <!-- Card 3: Consultation -->
+    <a class="card anim-up d7" href="https://meshulam.co.il/purchase?b=ec7458f16708a0094358ba805d7363f0" target="_blank" rel="noopener">
+      <div class="card__icon card__icon--consult">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 4 15.5 4 10C4 7 6.5 5 9 5C10.5 5 11.5 5.8 12 6.5C12.5 5.8 13.5 5 15 5C17.5 5 20 7 20 10C20 15.5 12 21 12 21Z" fill="#4BBFB0"/></svg>
+      </div>
+      <div class="card__body">
+        <div class="card__title">שיחת ייעוץ</div>
+        <div class="card__desc">לקביעת שיחת ייעוץ עם סער 1 על 1 של 60 דק׳ בזום</div>
+      </div>
+      <div class="card__arrow">
+        <svg width="14" height="14" fill="none"><path d="m2 12 10-10M12 2v10" stroke="#666" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </div>
+    </a>
+
+    <!-- Card 4: YouTube video — Option C with background image -->
+    <a class="card card--video anim-up d8" href="https://www.youtube.com/watch?v=EbJ6rYnDJaU" target="_blank" rel="noopener">
+      <div class="card__thumb-wrap">
+        <img class="card__thumb-bg" src="https://img.youtube.com/vi/EbJ6rYnDJaU/maxresdefault.jpg" alt="" loading="lazy">
+        <div class="card__thumb-overlay">
+          <!-- Play button (outline) -->
+          <div class="card__play-btn">
+            <svg viewBox="0 0 24 24" width="28" height="28"><polygon points="9,6 9,18 19,12" fill="rgba(255,255,255,0.8)"/></svg>
+          </div>
+          <!-- Title -->
+          <div class="card__thumb-title">18 החוקים שלנו לפרסום ממומן<br>שכל עסק חייב ליישם!</div>
+          <!-- Meta -->
+          <div class="card__thumb-meta" dir="ltr" style="unicode-bidi:bidi-override; direction:ltr;">׳קד 12:47 · <span style="color:#e85555">YouTube</span></div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Form -->
+  <div class="form-section anim-up d9">
+    <div class="form-section__title">הצטרפו לניוזלטר השיווק המוביל בישראל</div>
+    <div class="form-section__subtitle">כל הקייס סטאדיז והשיטות הכי טובות שלנו יגיעו אליכם למייל בחינם.</div>
+    <form id="leadForm" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <input type="text" name="name" placeholder="שם" required>
+        <input type="email" name="email" placeholder="אימייל" required>
+      </div>
+      <button type="submit" class="form-submit">הרשמה</button>
+    </form>
+  </div>
+
+  <div class="footer">&copy; 2026 סער בל</div>
+
+</div>
+
+<script>
+var AC_TOKEN = '88d8206973e17656b7226c65e810595a3939cf4e0018db1347cd63e18570bf7c7f00d4d6';
+var AC_URL = 'https://bellapoint.api-us1.com';
+var AC_HEADERS = { 'Api-Token': AC_TOKEN, 'Content-Type': 'application/json' };
+
+function getUtms() {
+  var params = new URLSearchParams(window.location.search);
+  return {
+    campaign: params.get('utm_campaign') || 'bio_link',
+    content: params.get('utm_content') || 'instagram_bio',
+    medium: params.get('utm_medium') || 'social'
+  };
+}
+
+function handleSubmit(e) {
+  e.preventDefault();
+  var form = e.target;
+  var btn = form.querySelector('.form-submit');
+  var name = form.name.value;
+  var email = form.email.value;
+  var utms = getUtms();
+
+  btn.textContent = 'שולח...';
+  btn.disabled = true;
+
+  // Step 1: Create/update contact with UTM fields
+  fetch(AC_URL + '/api/3/contacts', {
+    method: 'POST',
+    headers: AC_HEADERS,
+    body: JSON.stringify({
+      contact: {
+        email: email,
+        firstName: name,
+        fieldValues: [
+          { field: "7", value: utms.campaign },
+          { field: "8", value: utms.content },
+          { field: "10", value: utms.medium }
+        ]
+      }
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var contactId = data.contact && data.contact.id;
+    if (contactId) {
+      // Step 2: Add to IL - Newsletter list
+      return fetch(AC_URL + '/api/3/contactLists', {
+        method: 'POST',
+        headers: AC_HEADERS,
+        body: JSON.stringify({ contactList: { list: 16, contact: contactId, status: 1 } })
+      });
+    }
+  })
+  .then(function() {
+    btn.textContent = '\u05EA\u05D5\u05D3\u05D4!';
+    btn.style.background = '#16a34a';
+    btn.style.borderColor = '#16a34a';
+  })
+  .catch(function() {
+    btn.textContent = '\u05EA\u05D5\u05D3\u05D4!';
+    btn.style.background = '#16a34a';
+    btn.style.borderColor = '#16a34a';
+  });
+}
+</script>
+</body>
+</html>
