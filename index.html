@@ -510,12 +510,114 @@ var AC_TOKEN = '88d8206973e17656b7226c65e810595a3939cf4e0018db1347cd63e18570bf7c
 var AC_URL = 'https://bellapoint.api-us1.com';
 var AC_HEADERS = { 'Api-Token': AC_TOKEN, 'Content-Type': 'application/json' };
 
+/* ── First-touch attribution ────────────────────────────────────────────────
+ * The Instagram bio link lands here carrying its UTMs, but the visitor's real
+ * inquiry happens on www.bellapoint.net. A plain <a href> drops the UTMs on
+ * that hop, so the lead arrives looking like direct traffic and nobody can
+ * tell it came from Instagram.
+ *
+ * Two things fix it, and we do both:
+ *   1. Remember the first touch in a cookie on ".bellapoint.net", which every
+ *      subdomain (www, products) can read.
+ *   2. Copy the UTMs onto every bellapoint.net link on this page, so the hop
+ *      itself carries them even when cookies are blocked.
+ *
+ * We only ever record what the visitor really arrived with (URL params, or the
+ * referring site when there are no params). Nothing is invented.
+ * ------------------------------------------------------------------------ */
+var FT_COOKIE = 'bp_ft';
+var FT_KEYS = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','gclid','fbclid','ttclid','msclkid'];
+
+function ftParam(name) {
+  try { return new URLSearchParams(window.location.search).get(name) || ''; }
+  catch (e) { return ''; }
+}
+
+function ftReadCookie(name) {
+  try {
+    var parts = ('; ' + document.cookie).split('; ' + name + '=');
+    if (parts.length < 2) return null;
+    return JSON.parse(decodeURIComponent(parts.pop().split(';').shift()));
+  } catch (e) { return null; }
+}
+
+function ftWriteCookie(name, obj) {
+  try {
+    document.cookie = name + '=' + encodeURIComponent(JSON.stringify(obj)) +
+      '; domain=.bellapoint.net; path=/; max-age=7776000; SameSite=Lax; Secure';
+  } catch (e) { /* attribution must never break the page */ }
+}
+
+/* Where did they come from when the link carried no tags at all. */
+function ftFromReferrer() {
+  var ref = '';
+  try { ref = document.referrer || ''; } catch (e) { ref = ''; }
+  if (!ref) return null;
+  var host = '';
+  try { host = new URL(ref).hostname.toLowerCase(); } catch (e) { return null; }
+  if (host.indexOf('bellapoint.net') !== -1) return null;
+  if (/(^|\.)instagram\.com$/.test(host) || host === 'l.instagram.com') return { utm_source: 'ig', utm_medium: 'social' };
+  if (/(^|\.)(facebook\.com|fb\.com|m\.facebook\.com|lm\.facebook\.com)$/.test(host)) return { utm_source: 'fb', utm_medium: 'social' };
+  if (/(^|\.)(youtube\.com|youtu\.be)$/.test(host)) return { utm_source: 'youtube', utm_medium: 'social' };
+  if (/(^|\.)(tiktok\.com)$/.test(host)) return { utm_source: 'tiktok', utm_medium: 'social' };
+  if (/(^|\.)(linkedin\.com|lnkd\.in)$/.test(host)) return { utm_source: 'linkedin', utm_medium: 'social' };
+  return { utm_source: host, utm_medium: 'referral' };
+}
+
+/* The tags this visit actually arrived with. */
+function ftThisVisit() {
+  var t = {}, any = false, i;
+  for (i = 0; i < FT_KEYS.length; i++) {
+    var v = ftParam(FT_KEYS[i]);
+    if (v) { t[FT_KEYS[i]] = v; any = true; }
+  }
+  if (!any) {
+    var r = ftFromReferrer();
+    if (r) { t.utm_source = r.utm_source; t.utm_medium = r.utm_medium; any = true; }
+  }
+  if (!any) return null;
+  t.land = window.location.href.slice(0, 400);
+  try { t.ref = (document.referrer || '').slice(0, 300); } catch (e) { t.ref = ''; }
+  t.ts = new Date().toISOString();
+  return t;
+}
+
+/* First touch wins. The one exception: an older record with no source at all
+ * gets upgraded, because a blank is not a first touch worth keeping. */
+var firstTouch = (function () {
+  var stored = ftReadCookie(FT_COOKIE);
+  var now = ftThisVisit();
+  if (now && (!stored || !stored.utm_source)) { ftWriteCookie(FT_COOKIE, now); return now; }
+  return stored || now || {};
+})();
+
+function ftValue(name) {
+  return ftParam(name) || firstTouch[name] || '';
+}
+
+/* Carry the tags across the hop to our other sites. */
+function ftDecorateLinks() {
+  var links = document.querySelectorAll('a[href]');
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i], u;
+    try { u = new URL(a.getAttribute('href'), window.location.href); } catch (e) { continue; }
+    if (!/(^|\.)bellapoint\.net$/.test(u.hostname.toLowerCase())) continue;
+    for (var k = 0; k < FT_KEYS.length; k++) {
+      var v = ftValue(FT_KEYS[k]);
+      if (v && !u.searchParams.has(FT_KEYS[k])) u.searchParams.set(FT_KEYS[k], v);
+    }
+    a.setAttribute('href', u.href);
+  }
+}
+try { ftDecorateLinks(); } catch (e) { /* never block the page over attribution */ }
+
 function getUtms() {
-  var params = new URLSearchParams(window.location.search);
   return {
-    campaign: params.get('utm_campaign') || 'bio_link',
-    content: params.get('utm_content') || 'instagram_bio',
-    medium: params.get('utm_medium') || 'social'
+    source:   ftValue('utm_source')   || 'ig',
+    campaign: ftValue('utm_campaign') || 'bio_link',
+    content:  ftValue('utm_content')  || 'instagram_bio',
+    medium:   ftValue('utm_medium')   || 'social',
+    term:     ftValue('utm_term')
   };
 }
 
@@ -541,8 +643,10 @@ function handleSubmit(e) {
         fieldValues: [
           { field: "7", value: utms.campaign },
           { field: "8", value: utms.content },
-          { field: "10", value: utms.medium }
-        ]
+          { field: "10", value: utms.medium },
+          { field: "17", value: utms.source },
+          { field: "18", value: utms.term }
+        ].filter(function (f) { return f.value; })
       }
     })
   })
