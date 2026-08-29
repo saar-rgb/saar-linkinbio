@@ -506,9 +506,18 @@ body {
 </div>
 
 <script>
-var AC_TOKEN = '88d8206973e17656b7226c65e810595a3939cf4e0018db1347cd63e18570bf7c7f00d4d6';
-var AC_URL = 'https://bellapoint.api-us1.com';
-var AC_HEADERS = { 'Api-Token': AC_TOKEN, 'Content-Type': 'application/json' };
+/* Where the sign-up goes.
+ *
+ * This page used to call ActiveCampaign straight from here with a full API
+ * token written into the page, which anyone could read with View Source. It
+ * now posts to our own server, and the key stays on the server. Never put a
+ * marketing key back into this file.
+ *
+ * The server route is /api/linkinbio-lead in the bellapoint-automations
+ * project. It writes the contact into Senderz and fires the linkinbio_lead
+ * event that starts the flow.
+ */
+var LEAD_ENDPOINT = 'https://bellapoint-automations.vercel.app/api/linkinbio-lead';
 
 /* ── First-touch attribution ────────────────────────────────────────────────
  * The Instagram bio link lands here carrying its UTMs, but the visitor's real
@@ -632,35 +641,25 @@ function handleSubmit(e) {
   btn.textContent = 'שולח...';
   btn.disabled = true;
 
-  // Step 1: Create/update contact with UTM fields
-  fetch(AC_URL + '/api/3/contacts', {
+  /* One call to our own server. It does the contact, the list and the event.
+   * The two-step "create the contact, then add it to list 16" dance the old
+   * code did belongs on the server now, not in a visitor's browser. */
+  fetch(LEAD_ENDPOINT, {
     method: 'POST',
-    headers: AC_HEADERS,
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      contact: {
-        email: email,
-        firstName: name,
-        fieldValues: [
-          { field: "7", value: utms.campaign },
-          { field: "8", value: utms.content },
-          { field: "10", value: utms.medium },
-          { field: "17", value: utms.source },
-          { field: "18", value: utms.term }
-        ].filter(function (f) { return f.value; })
-      }
+      name: name,
+      email: email,
+      utm_source: utms.source,
+      utm_medium: utms.medium,
+      utm_campaign: utms.campaign,
+      utm_content: utms.content,
+      utm_term: utms.term,
+      page_url: window.location.href.slice(0, 400),
+      referrer: (document.referrer || '').slice(0, 300),
+      fbclid: ftValue('fbclid'),
+      gclid: ftValue('gclid')
     })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    var contactId = data.contact && data.contact.id;
-    if (contactId) {
-      // Step 2: Add to IL - Newsletter list
-      return fetch(AC_URL + '/api/3/contactLists', {
-        method: 'POST',
-        headers: AC_HEADERS,
-        body: JSON.stringify({ contactList: { list: 16, contact: contactId, status: 1 } })
-      });
-    }
   })
   .then(function() {
     btn.textContent = '\u05EA\u05D5\u05D3\u05D4!';
