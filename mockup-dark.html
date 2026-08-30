@@ -506,9 +506,11 @@ body {
 </div>
 
 <script>
-var AC_TOKEN = '88d8206973e17656b7226c65e810595a3939cf4e0018db1347cd63e18570bf7c7f00d4d6';
-var AC_URL = 'https://bellapoint.api-us1.com';
-var AC_HEADERS = { 'Api-Token': AC_TOKEN, 'Content-Type': 'application/json' };
+/* The ActiveCampaign key that used to sit here was removed 2026-08-29.
+ * This is a mockup, never deployed, but the key was real and is being
+ * rotated. The live page posts to our own server instead:
+ * bellapoint-automations /api/linkinbio-lead */
+var LEAD_ENDPOINT = 'https://bellapoint-automations.vercel.app/api/linkinbio-lead';
 
 function getUtms() {
   var params = new URLSearchParams(window.location.search);
