@@ -661,15 +661,33 @@ function handleSubmit(e) {
       gclid: ftValue('gclid')
     })
   })
+  .then(function(res) {
+    /* Thank only when the server really saved it. A failed call, an error
+     * status, or ok:false in the answer is a failure, not a thank-you. */
+    if (!res.ok) throw new Error('status ' + res.status);
+    return res.json().then(function(data) {
+      if (!data || data.ok !== true) throw new Error('not saved');
+    });
+  })
   .then(function() {
+    var err = form.querySelector('.form-error');
+    if (err) err.remove();
     btn.textContent = '\u05EA\u05D5\u05D3\u05D4!';
     btn.style.background = '#16a34a';
     btn.style.borderColor = '#16a34a';
   })
   .catch(function() {
-    btn.textContent = '\u05EA\u05D5\u05D3\u05D4!';
-    btn.style.background = '#16a34a';
-    btn.style.borderColor = '#16a34a';
+    var err = form.querySelector('.form-error');
+    if (!err) {
+      err = document.createElement('div');
+      err.className = 'form-error';
+      err.setAttribute('role', 'alert');
+      err.style.cssText = 'color:#dc2626;font-size:14px;margin-top:8px;text-align:center;';
+      form.appendChild(err);
+    }
+    err.textContent = '\u05DE\u05E9\u05D4\u05D5 \u05D4\u05E9\u05EA\u05D1\u05E9, \u05E0\u05E1\u05D5 \u05E9\u05D5\u05D1';
+    btn.textContent = '\u05D4\u05E8\u05E9\u05DE\u05D4';
+    btn.disabled = false;
   });
 }
 </script>
